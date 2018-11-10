@@ -31,27 +31,38 @@ export class RestDataSource {
   }
 
   getProducts(): Observable<Product[]> {
-    return this.sendRequestProducts(RequestMethod.Get, 'products');
+    return this.sendRequest(RequestMethod.Get, 'products');
   }
 
-  private sendRequestProducts(verb: RequestMethod, url: string, auth: boolean = false): Observable<Product[]> {
-    const request = new Request({
-      method: verb,
-      url: this.baseUrl + url
-    });
+  saveProduct(product: Product): Observable<Product> {
+    return this.sendRequest(RequestMethod.Post, 'products', product, true);
+  }
 
-    if (auth && this.auth_token != null) {
-      request.headers.set('Authorization', 'Bearer<${this.auth_token}>');
-    }
+  updateProduct(product): Observable<Product> {
+    return this.sendRequest(RequestMethod.Put, 'products/${product.id}', product, true);
+  }
 
-    return this.http.request(request).map(response => response.json());
+  deleteProduct(id: number): Observable<Product> {
+    return this.sendRequest(RequestMethod.Delete, 'products/${id}', null, true);
+  }
+
+  getOrders(): Observable<Order[]> {
+    return this.sendRequest(RequestMethod.Get, 'orders', null, true);
+  }
+
+  deleteOrder(id: number): Observable<Order> {
+    return this.sendRequest(RequestMethod.Delete, 'orders/${id}', null, true);
+  }
+
+  updateOrder(order: Order): Observable<Order> {
+    return this.sendRequest(RequestMethod.Put, 'orders/${order.id}', order, true);
   }
 
   saveOrder(order: Order): Observable<Order> {
-    return this.sendRequestOrder(RequestMethod.Post, 'orders', order);
+    return this.sendRequest(RequestMethod.Post, 'orders', order);
   }
 
-  private sendRequestOrder(verb: RequestMethod, url: string, body: Order, auth: boolean = false): Observable<Order> {
+  private sendRequest(verb: RequestMethod, url: string, body: any = null, auth: boolean = false): any {
     const request = new Request({
       method: verb,
       url: this.baseUrl + url,
