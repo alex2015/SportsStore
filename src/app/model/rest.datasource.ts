@@ -70,7 +70,7 @@ export class RestDataSource {
     });
 
     if (auth && this.auth_token != null) {
-      request.headers.set('Authorization', 'Bearer<${this.auth_token}>');
+      request.headers.set('Authorization', `Bearer<${this.auth_token}>`);
     }
 
     return this.http.request(request).map(response => response.json());
